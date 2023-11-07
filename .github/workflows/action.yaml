@@ -1,0 +1,84 @@
+---
+name: Run Makefile
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Run Makefile
+      run: make
+
+    - name: Cache APT packages
+      id: cache-apt
+      uses: actions/cache@v2
+      with:
+        path: /var/cache/apt/archives
+        key: ${{ runner.os }}-apt-${{ hashFiles('/home/justin92/ajoda/github_actions/random_scripts/packages') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-
+
+    - name: Install APT packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y $(cat /home/justin92/ajoda/github_actions/random_scripts/packages)
+    
+    # - name: Cache apt packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: apt-cache
+    #     key: apt-packages-${{ runner.os }}
+    #     restore-keys: |
+    #       apt-packages-ubuntu-
+    #       apt-packages-
+    #   if: success()
+
+    # - name: Restore apt packages
+    #   uses: actions/cache/restore@v3
+    #   with:
+    #     path: apt-cache
+    #     key: apt-packages-${{ runner.os }}
+
+    # - name: Set up custom apt cache directory
+    #   run: |
+    #     mkdir -p apt-cache/archives
+    #     mkdir -p apt-cache/partial
+    #     mkdir -p apt-cache/lock
+    #   working-directory: ${{ runner.workspace }}
+
+    
+    # - name: Install all the things
+    #   run: |
+    #       sudo apt-get update -q
+    #       sudo apt-get -y install \
+    #         git \
+    #         curl \
+    #         wget \
+    #         make \
+    #         gcc \
+    #         g++ \
+    #         python3 \
+    #         python3-pip \
+    #         nodejs \
+    #         npm \
+    #         jq \
+    #         unzip \
+    #         zip \
+    #         openssh-client \
+    #         openssl
+    #   shell: bash
+
+    # - name: Cache apt packages
+    #   uses: actions/cache@v3
+    #   with:
+    #     path: apt-cache
+    #     key: apt-packages-${{ runner.os }}
