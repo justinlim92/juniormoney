@@ -27,7 +27,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/practice:{{ steps.set-short-sha.outputs.short_sha }}
+          tags: ${{ secrets.DOCKER_USER }}/practice:${{ steps.set-short-sha.outputs.short_sha }}
 
 # jobs:
 #   build-with-docker:
