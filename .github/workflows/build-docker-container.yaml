@@ -11,7 +11,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - run: env | sort
+      - name: Get Short SHA
+        id: set-short-sha
+        run: echo "##[set-output name=short_sha;]${GITHUB_SHA::7}"
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
@@ -25,7 +27,7 @@ jobs:
           context: .
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ secrets.DOCKER_USER }}/practice:first
+          tags: ${{ secrets.DOCKER_USER }}/practice:{{ steps.set-short-sha.outputs.short_sha }}
 
 # jobs:
 #   build-with-docker:
